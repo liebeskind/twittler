@@ -10,21 +10,34 @@
       $(document).ready(function(){
         var $body = $('body');
 
+        // Update function that adds new tweets to output
         var update = function(){
           $body.html('');
           for (var i = streams.home.length - 1; i > 0; i--){
             var tweet = streams.home[i];
-            var $tweet = $('<div></div>');
+            $('body').css({'border': '10px', 'padding':'20px'})
+            var $tweet = $("<div></div>");
+            var $newEntry = $("<span class = 'newEntry'</span>")
+            var $newMessage = $("<span class = 'newMessage'</span>")
+
             var newDate = tweet.created_at
             var dateFormatted = ([newDate.getMonth(), newDate.getDate(), newDate.getFullYear()-2000].join('/') + ' '
               + [(newDate.getHours()>12) ? newDate.getHours()-12 : newDate.getHours()] + ':'
-              + [(newDate.getMinutes()<10) ? '0' + newDate.getMinutes() : newDate.getMinutes()] 
-              + [(newDate.getHours()>12) ? 'pm ' : 'am '] 
+              + [(newDate.getMinutes()<10) ? '0' + newDate.getMinutes() : newDate.getMinutes()]
+              + [(newDate.getHours()>12) ? 'pm ' : 'am ']
               + newDate.getSeconds() + 's');
 
-            $tweet.text(dateFormatted + ' @' + tweet.user + ': ' + tweet.message);
+            var theUser = tweet.user;
+            var theMessage = tweet.message;
 
+            $tweet.text(dateFormatted);
+            $newEntry.text('@' + theUser + ': ');
+            $newMessage.text(theMessage)
             $tweet.appendTo($body);
+            $newEntry.appendTo($tweet);
+            $newMessage.appendTo($tweet);
+
+            $('.newEntry').css({'font-weight':'bold'})
           } 
         }
         
@@ -32,7 +45,9 @@
         window.setInterval(function(){
           update();
         }, 250)
-      
+
+
+
       });
 
     </script>
