@@ -13,7 +13,7 @@
         var intervalCounter2;
         
         // Update function that adds new tweets to output
-        var update = function(){
+        var update = function(theSpecificUser){
           $body.html('');
           for (var i = streams.home.length - 1; i > 0; i--){
             var tweet = streams.home[i];
@@ -23,7 +23,8 @@
             var $newMessage = $("<span class = 'newMessage'</span>")
 
             var newDate = tweet.created_at;
-            var dateFormatted = ([newDate.getMonth(), newDate.getDate(), newDate.getFullYear()-2000].join('/') + ' ' +  
+            var dateFormatted = 
+                ([newDate.getMonth(), newDate.getDate(), newDate.getFullYear()-2000].join('/') + ' ' +  
                 [(newDate.getHours()>12) ? newDate.getHours()-12 : newDate.getHours()] + ':'
               + [(newDate.getMinutes()<10) ? '0' + newDate.getMinutes() : newDate.getMinutes()]
               + [(newDate.getHours()>12) ? 'pm ' : 'am ']
@@ -32,43 +33,15 @@
             var theUser = tweet.user;
             var theMessage = tweet.message;
 
-            $tweet.text(dateFormatted);
-            $newEntry.text('@' + theUser + ': ');
-            $newMessage.text(theMessage)
+            if (theSpecificUser === undefined || theUser === theSpecificUser){
+            $tweet.text(dateFormatted + '@');
+            $newEntry.text(theUser);
+            $newMessage.text(': ' + theMessage)
             $tweet.appendTo($body);
             $newEntry.appendTo($tweet);
             $newMessage.appendTo($tweet);
 
-            $('.newEntry').css({'font-weight':'bold'})
-          } 
-        };
-        
-        var specificUser = function(theSpecificUser) {
-          $body.html('');
-          for (var i = streams.home.length - 1; i > 0; i--){
-            var tweet = streams.home[i];
-            $body.css({'border': '10px', 'padding':'20px'})
-            var $tweet = $("<div></div>");
-            var $newEntry = $("<span class = 'newEntry'</span>")
-            var $newMessage = $("<span class = 'newMessage'</span>")
-
-            var newDate = tweet.created_at;
-            var dateFormatted = ([newDate.getMonth(), newDate.getDate(), newDate.getFullYear()-2000].join('/') + ' ' +  
-                [(newDate.getHours()>12) ? newDate.getHours()-12 : newDate.getHours()] + ':'
-              + [(newDate.getMinutes()<10) ? '0' + newDate.getMinutes() : newDate.getMinutes()]
-              + [(newDate.getHours()>12) ? 'pm ' : 'am ']
-              + newDate.getSeconds() + 's');
-
-            var theUser = tweet.user;
-            var theMessage = tweet.message;
-
-            if (theUser === theSpecificUser){
-            $tweet.text(dateFormatted);
-            $newEntry.text('@' + theUser + ': ');
-            $newMessage.text(theMessage)
-            $tweet.appendTo($body);
-            $newEntry.appendTo($tweet);
-            $newMessage.appendTo($tweet);
+            $('.newEntry').css({'font-weight':'bold', 'cursor':'pointer'})
             }
           }
         };
@@ -78,20 +51,26 @@
         function intervalFunction(){
           intervalCounter1 = window.setInterval(function(){
             update();
-            $('.newEntry').click(function(){
+            
+            $('.newEntry').on("click", function(){
               clearInterval(intervalCounter1);
-              specificUser('sharksforcheap');
+              var selectedUser = $(this).text();
                 intervalCounter2 = window.setInterval(function(){
-                  specificUser('sharksforcheap');
-                  var returnButton = $body.append('<input type = "button" value = "Back to Full Timeline">').click(function() {
-                    return intervalFunction();
+                  update(selectedUser);
+            
+                  $body.append('<input type = "button" id = "backButton" value = "Back to Full Timeline" >')
+                  $('#backButton').on("click", function() {
+                    clearInterval(intervalCounter2);
+                    intervalFunction();
                   });
-                }, 100);  
-            })
-          }, 100)
+                }, 400);  
+            });
+          }, 400)
         };
 
       });
     </script>
   </body>
 </html>
+
+
