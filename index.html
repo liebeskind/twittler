@@ -9,7 +9,9 @@
 
       $(document).ready(function(){
         var $body = $('body');
-
+        var intervalCounter1;
+        var intervalCounter2;
+        
         // Update function that adds new tweets to output
         var update = function(){
           $body.html('');
@@ -39,8 +41,7 @@
 
             $('.newEntry').css({'font-weight':'bold'})
           } 
-
-        }
+        };
         
         var specificUser = function(theSpecificUser) {
           $body.html('');
@@ -70,27 +71,27 @@
             $newMessage.appendTo($tweet);
             }
           }
-        }
+        };
 
-        update();
+        intervalFunction();
         
-          var intervalCounter1 = window.setInterval(function(){
+        function intervalFunction(){
+          intervalCounter1 = window.setInterval(function(){
             update();
             $('.newEntry').click(function(){
               clearInterval(intervalCounter1);
               specificUser('sharksforcheap');
-              var intervalCounter2 = window.setInterval(function(){
-                specificUser('sharksforcheap');
-                $body.append('<input type = "button" value = "Back to Full Timeline">').button().click(function() {
-                  update();
-                });
-              }, 100);  
+                intervalCounter2 = window.setInterval(function(){
+                  specificUser('sharksforcheap');
+                  var returnButton = $body.append('<input type = "button" value = "Back to Full Timeline">').click(function() {
+                    return intervalFunction();
+                  });
+                }, 100);  
             })
           }, 100)
-        
+        };
 
       });
-
     </script>
   </body>
 </html>
