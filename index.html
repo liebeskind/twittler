@@ -12,6 +12,8 @@
         var intervalCounter1;
         var intervalCounter2;
         
+        intervalFunction();
+
         // Update function that adds new tweets to output
         var update = function(theSpecificUser){
           $body.html('');
@@ -24,7 +26,7 @@
 
             var newDate = tweet.created_at;
             var dateFormatted = 
-                ([newDate.getMonth(), newDate.getDate(), newDate.getFullYear()-2000].join('/') + ' ' +  
+                (//[newDate.getMonth(), newDate.getDate(), newDate.getFullYear()-2000].join('/') + ' ' +  
                 [(newDate.getHours()>12) ? newDate.getHours()-12 : newDate.getHours()] + ':'
               + [(newDate.getMinutes()<10) ? '0' + newDate.getMinutes() : newDate.getMinutes()]
               + [(newDate.getHours()>12) ? 'pm ' : 'am ']
@@ -34,19 +36,19 @@
             var theMessage = tweet.message;
 
             if (theSpecificUser === undefined || theUser === theSpecificUser){
-            $tweet.text(dateFormatted + '@');
+            $tweet.text(dateFormatted + ' @');
             $newEntry.text(theUser);
             $newMessage.text(': ' + theMessage)
             $tweet.appendTo($body);
             $newEntry.appendTo($tweet);
             $newMessage.appendTo($tweet);
 
-            $('.newEntry').css({'font-weight':'bold', 'cursor':'pointer'})
+            $('.newEntry').css({'font-weight':'bold', 'cursor':'pointer'});
+            $('.newMessage').css({'font-style':'italic'});
+            $body.css({'background-color': '#00FFFF'});
             }
           }
         };
-
-        intervalFunction();
         
         function intervalFunction(){
           intervalCounter1 = window.setInterval(function(){
