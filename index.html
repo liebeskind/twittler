@@ -9,14 +9,16 @@
 
       $(document).ready(function(){
         var $body = $('body');
-        var intervalCounter1;
-        var intervalCounter2;
+
         
         intervalFunction();
 
         // Update function that adds new tweets to output
         var update = function(theSpecificUser){
           $body.html('');
+          	if(theSpecificUser){
+          		$body.append('<input type = "button" id = "backButton" value = "Back to Full Timeline" >')
+      		}
           for (var i = streams.home.length - 1; i > 0; i--){
             var tweet = streams.home[i];
             $body.css({'border': '10px', 'padding':'20px'})
@@ -42,6 +44,7 @@
             $tweet.appendTo($body);
             $newEntry.appendTo($tweet);
             $newMessage.appendTo($tweet);
+            
 
             $('.newEntry').css({'font-weight':'bold', 'cursor':'pointer'});
             $('.newMessage').css({'font-style':'italic'});
@@ -50,26 +53,24 @@
           }
         };
         
-        function intervalFunction(){
-          intervalCounter1 = window.setInterval(function(){
-            update();
-            
-            $('.newEntry').on("click", function(){
-              clearInterval(intervalCounter1);
-              var selectedUser = $(this).text();
-                intervalCounter2 = window.setInterval(function(){
-                  update(selectedUser);
-            
-                  $body.append('<input type = "button" id = "backButton" value = "Back to Full Timeline" >')
-                  $('#backButton').on("click", function() {
-                    clearInterval(intervalCounter2);
-                    intervalFunction();
-                  });
-                }, 300);  
-            });
-          }, 300)
-        };
+        var intervalID;
 
+        function intervalFunction(selectedUser){           
+          window.clearInterval(intervalID);
+          intervalID = window.setInterval(function(){
+            update(selectedUser);
+          }, 400)
+        };
+        
+		$('body').on("click", '.newEntry', function(){
+            var selectedUser = $(this).text();
+            intervalFunction(selectedUser)
+        });
+                  
+        $('body').on("click", '#backButton', function() {
+            intervalFunction()
+        });
+                                    
       });
     </script>
   </body>
